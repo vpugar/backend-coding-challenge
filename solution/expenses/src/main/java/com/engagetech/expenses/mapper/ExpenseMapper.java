@@ -1,0 +1,13 @@
+package com.engagetech.expenses.mapper;
+
+import com.engagetech.expenses.dto.ExpenseDTO;
+import com.engagetech.expenses.model.Expense;
+import org.mapstruct.Mapper;
+
+import static com.engagetech.expenses.util.Constants.MAPPER_COMPONENT_MODEL;
+
+@Mapper(componentModel = MAPPER_COMPONENT_MODEL, uses = {UserMapper.class, PrimaryKeyMapper.class})
+public interface ExpenseMapper extends EntityMapper<ExpenseDTO, Expense> {
+
+
+}

@@ -1,4 +1,4 @@
-package com.example.expenses;
+package com.engagetech.expenses;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;

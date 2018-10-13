@@ -1,0 +1,8 @@
+CREATE DATABASE expenses
+    DEFAULT CHARACTER SET utf8
+    DEFAULT COLLATE utf8_general_ci;
+CREATE USER 'expenses'@'%'
+    IDENTIFIED BY 'expenses';
+GRANT ALL PRIVILEGES ON *.* TO 'expenses'@'%'
+    WITH GRANT OPTION;
+FLUSH PRIVILEGES;

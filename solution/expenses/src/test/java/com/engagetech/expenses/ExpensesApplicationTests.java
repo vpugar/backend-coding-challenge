@@ -1,4 +1,4 @@
-package com.example.expenses;
+package com.engagetech.expenses;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
