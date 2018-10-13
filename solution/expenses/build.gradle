@@ -1,46 +1,58 @@
 buildscript {
     repositories {
+        maven {
+            url "https://plugins.gradle.org/m2/"
+        }
         mavenCentral()
     }
     dependencies {
-        classpath("org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}")
+        classpath("net.ltgt.gradle:gradle-apt-plugin:$netLtgtAptVersion")
+        classpath("org.springframework.boot:spring-boot-gradle-plugin:$springBootVersion")
     }
 }
 
-plugins {
-    id 'net.ltgt.apt' version "$netLtgtAptVersion"
-}
-
-apply plugin: 'java'
+apply plugin: 'idea'
 apply plugin: 'eclipse'
-apply plugin: 'org.springframework.boot'
 apply plugin: 'io.spring.dependency-management'
+apply plugin: 'java'
 apply plugin: 'net.ltgt.apt'
+apply plugin: 'org.springframework.boot'
 
 group = 'com.example'
-version = '0.0.1-SNAPSHOT'
+version = '0.0.2-SNAPSHOT'
 sourceCompatibility = 1.8
 
 repositories {
     mavenCentral()
 }
 
-
 dependencies {
-    
-    apt("org.projectlombok:lombok:$lombokVersion")
-    apt("org.mapstruct:mapstruct-processor:${mapstructVersion}")
-    
+
+    annotationProcessor("org.projectlombok:lombok:$lombokVersion")
+    annotationProcessor("org.mapstruct:mapstruct-processor:${mapstructVersion}")
+
     compileOnly("org.projectlombok:lombok:$lombokVersion")
-    
-    compile("org.flywaydb:flyway-core:$flywayVersion")
+
+    compile("io.github.openfeign:feign-jackson:$feignVersion")
+    compile("io.github.openfeign:feign-okhttp:$feignVersion")
+    compile("org.flywaydb:flyway-core")
     compile("org.mapstruct:mapstruct-jdk8:$mapstructVersion")
-    
+
+    implementation('com.hazelcast:hazelcast')
+    implementation('com.hazelcast:hazelcast-hibernate52')
+    implementation('com.hazelcast:hazelcast-spring')
+    implementation('com.zaxxer:HikariCP')
+    implementation('mysql:mysql-connector-java')
+    implementation("org.apache.commons:commons-lang3")
     implementation('org.springframework.boot:spring-boot-starter-actuator')
     implementation('org.springframework.boot:spring-boot-starter-data-jpa')
     implementation('org.springframework.boot:spring-boot-starter-web')
-    
+
     runtimeOnly('org.springframework.boot:spring-boot-devtools')
 
     testImplementation('org.springframework.boot:spring-boot-starter-test')
+}
+
+bootJar {
+    launchScript()
 }
