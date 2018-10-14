@@ -22,5 +22,24 @@ public final class ExchangeRate implements WithId {
     )
     private Long id;
 
+    @Column(name = "rate_date", nullable = false, updatable = false)
+    private LocalDate date;
 
+    @ManyToOne
+    @JoinColumn(name = "source_currency_id", referencedColumnName = "id", nullable = false, updatable = false)
+    private Currency sourceCurrency;
+
+    @ManyToOne
+    @JoinColumn(name = "target_currency_id", referencedColumnName = "id", nullable = false, updatable = false)
+    private Currency targetCurrency;
+
+    @Column(nullable = false, updatable = false)
+    private BigDecimal rate;
+
+    public ExchangeRate(LocalDate date, Currency sourceCurrency, Currency targetCurrency, BigDecimal rate) {
+        this.date = date;
+        this.sourceCurrency = sourceCurrency;
+        this.targetCurrency = targetCurrency;
+        this.rate = rate;
+    }
 }
