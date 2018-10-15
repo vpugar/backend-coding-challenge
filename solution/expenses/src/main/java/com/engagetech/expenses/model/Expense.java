@@ -6,6 +6,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.*;
+import java.time.Instant;
 import java.time.LocalDate;
 
 import static com.engagetech.expenses.util.Constants.STRING_MAX_LENGTH;
@@ -23,11 +24,61 @@ public final class Expense implements WithId {
     )
     private Long id;
 
+    @Column(name = "created_at", nullable = false, updatable = false)
+    @Setter(AccessLevel.NONE)
+    private Instant createdAt = Instant.now();
+
     @Column(name = "expense_date", nullable = false, updatable = false)
     private LocalDate date;
 
     @Column(nullable = false, updatable = false, length = STRING_MAX_LENGTH)
     private String reason;
+
+    @Embedded
+    @AssociationOverrides(
+            @AssociationOverride(
+                    name = "currency",
+                    joinColumns = @JoinColumn(
+                            name = "source_currency_id",
+                            nullable = false,
+                            updatable = false
+                    )
+            )
+    )
+    @AttributeOverrides(
+            @AttributeOverride(
+                    name = "amount",
+                    column = @Column(
+                            name = "source_amount",
+                            nullable = false,
+                            updatable = false
+                    )
+            )
+    )
+    private CurrencyAmount sourceCurrencyAmount;
+
+    @Embedded
+    @AssociationOverrides(
+            @AssociationOverride(
+                    name = "currency_id",
+                    joinColumns = @JoinColumn(
+                            name = "currency_id",
+                            nullable = false,
+                            updatable = false
+                    )
+            )
+    )
+    @AttributeOverrides(
+            @AttributeOverride(
+                    name = "amount",
+                    column = @Column(
+                            name = "amount",
+                            nullable = false,
+                            updatable = false
+                    )
+            )
+    )
+    private CurrencyAmount currencyAmount;
 
     @Embedded
     private VatData vatData;
