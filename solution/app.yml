@@ -1,0 +1,17 @@
+version: '2'
+services:
+  expenses-vp-mysql:
+    extends:
+      file: mysql.yml
+      service: expenses-vp-mysql
+  expenses-vp-app:
+    image: expenses-vp
+    environment:
+    - SPRING_DATASOURCE_URL=jdbc:mysql://expenses-vp-mysql:3306/expenses?useSSL=false
+    - EXPENSES_VP_SLEEP=10 # gives time for the database to boot before the application
+    ports:
+    - 8181:8181
+  expenses-vp-nginx:
+    image: nginx-vp
+    ports:
+    - 8080:80

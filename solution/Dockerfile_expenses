@@ -1,0 +1,23 @@
+FROM java:8
+
+ENV LOGGING_PATH /tmp/
+
+# spring boot setting
+ENV CONF_FOLDER /expenses/conf/
+
+ENV EXPENSES_VP_SLEEP=0 \
+    JAVA_OPTS=""
+
+ENV EXPENSES_JAR_PATH expenses/build/libs/expenses-0.0.1-SNAPSHOT.jar
+
+ADD ${EXPENSES_JAR_PATH} /expenses.jar
+RUN chmod 744 /expenses.jar
+
+VOLUME /expenses/conf/
+VOLUME /tmp/
+
+EXPOSE 8181
+
+CMD echo "The application will start in ${EXPENSES_VP_SLEEP}s..." && \
+    sleep ${EXPENSES_VP_SLEEP} && \
+    /expenses.jar
