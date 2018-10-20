@@ -41,7 +41,12 @@ public class SalesTaxVatCalculatorParameterizedTest {
                 {new BigDecimal("20"), 3, new BigDecimal("100"), new BigDecimal("20.000")},
                 {new BigDecimal("20"), 3, new BigDecimal("123.456"), new BigDecimal("24.691")},
                 {new BigDecimal("20"), 3, new BigDecimal("123.999"), new BigDecimal("24.800")},
-                {new BigDecimal("20"), 3, new BigDecimal("55.555"), new BigDecimal("11.111")}
+                {new BigDecimal("20"), 3, new BigDecimal("55.555"), new BigDecimal("11.111")},
+                {new BigDecimal("20"), 2, new BigDecimal("100"), new BigDecimal("20.00")},
+                {new BigDecimal("20"), 2, new BigDecimal("100.00"), new BigDecimal("20.00")},
+                {new BigDecimal("20"), 2, new BigDecimal("44.44"), new BigDecimal("8.89")},
+                {new BigDecimal("20"), 2, new BigDecimal("33.33"), new BigDecimal("6.67")},
+                {new BigDecimal("20"), 2, new BigDecimal("99.99"), new BigDecimal("20.00")}
         };
     }
 

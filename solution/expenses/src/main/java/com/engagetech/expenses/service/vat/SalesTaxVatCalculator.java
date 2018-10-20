@@ -36,5 +36,4 @@ public class SalesTaxVatCalculator implements VatCalculator {
 
         return new VatData(vatRate, vatAmount);
     }
-
 }

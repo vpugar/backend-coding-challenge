@@ -2,10 +2,11 @@ package com.engagetech.expenses.service;
 
 
 import com.engagetech.expenses.util.Constants;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
-import org.hibernate.validator.constraints.Length;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.validation.constraints.NotNull;
 import java.time.LocalDate;
@@ -13,16 +14,12 @@ import java.time.LocalDate;
 @Getter
 @Setter
 @ToString
-public class AddExpenseCommand {
+public class CalculateVatCommand {
 
-    @NotNull
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = Constants.DATE_INPUT_FORMAT)
+    @DateTimeFormat(pattern = Constants.DATE_INPUT_FORMAT)
     private LocalDate date;
 
     @NotNull
     private String amount;
-
-    @Length(min = 1, max = Constants.STRING_MAX_LENGTH)
-    private String reason;
 
 }

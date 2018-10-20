@@ -14,6 +14,7 @@ import static javax.persistence.GenerationType.IDENTITY;
 @Table(name = "exchange_rate")
 @Data
 @NoArgsConstructor
+@EqualsAndHashCode(of = {"date", "sourceCurrency", "targetCurrency"})
 public final class ExchangeRate implements WithId {
 
     @Id

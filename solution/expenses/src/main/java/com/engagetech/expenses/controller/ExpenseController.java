@@ -53,4 +53,21 @@ public class ExpenseController {
         List<ExpenseDTO> userExpenses = userExpenseService.getUserExpenses(1);
         return ResponseEntity.ok(userExpenses);
     }
+
+    @GetMapping("/{id}")
+    @Timed
+    public ResponseEntity<ExpenseDTO> getExpense(@PathVariable long id) throws ExpenseNotFoundException {
+        // TODO Check user
+        ExpenseDTO userExpense = userExpenseService.getUserExpense(id);
+        return ResponseEntity.ok(userExpense);
+    }
+
+
+    @GetMapping("/calculations")
+    @Timed
+    public ResponseEntity<VatCalculationDTO> calculate(CalculateVatCommand command)
+            throws ExpenseProcessException {
+        final VatCalculationDTO vatCalculation = userExpenseService.calculate(command);
+        return ResponseEntity.ok(vatCalculation);
+    }
 }

@@ -8,7 +8,7 @@ import org.springframework.http.MediaType;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 
-public final class ExpensesApplicationTestHelper {
+public final class ExpensesApplicationJunitTestHelper {
 
     public static final long USER_ID = 1L;
 
@@ -26,7 +26,7 @@ public final class ExpensesApplicationTestHelper {
         return mapper.writeValueAsBytes(object);
     }
 
-    private ExpensesApplicationTestHelper() {
+    private ExpensesApplicationJunitTestHelper() {
         throw new UnsupportedOperationException("Cannot use constructor");
     }
 }

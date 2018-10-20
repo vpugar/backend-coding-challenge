@@ -72,5 +72,67 @@ public class CurrencyAmountParserTest {
         currencyAmountParser.parse("thisisnotvalid");
     }
 
+    @Test
+    public void givenNotValidString3WhenParseThenNoAmountException() throws Exception {
+        // assert
+        expectedException.expect(NoAmountException.class);
+        expectedException.expectMessage("No amount in expression");
+
+        currencyAmountParser.parse("thisis notvalid");
+    }
+
+    @Test
+    public void givenNotValidString4WhenParseThenNoAmountException() throws Exception {
+        // assert
+        expectedException.expect(NoAmountException.class);
+        expectedException.expectMessage("Cannot parse amount");
+
+        currencyAmountParser.parse("127.00.01");
+    }
+
+    @Test
+    public void givenNotSupportedCurrencyWhenParseThenUnknownCurrencyException() throws Exception {
+        // assert
+        expectedException.expect(UnknownCurrencyException.class);
+        expectedException.expectMessage("Not supported currency USD");
+
+        currencyAmountParser.parse("1234 USD");
+    }
+
+    @Test
+    public void givenNotExistingCurrency1WhenParseThenUnknownCurrencyException() throws Exception {
+        // assert
+        expectedException.expect(UnknownCurrencyException.class);
+        expectedException.expectMessage("UNW");
+
+        currencyAmountParser.parse("1234 UNW");
+    }
+
+    @Test
+    public void givenNotExistingCurrency2WhenParseThenUnknownCurrencyException() throws Exception {
+        // assert
+        expectedException.expect(UnknownCurrencyException.class);
+        expectedException.expectMessage("UNW");
+
+        currencyAmountParser.parse("1234.00 UNW");
+    }
+
+    @Test
+    public void givenValidCurrencyWhenParseThenNoAmountException() throws Exception {
+        // assert
+        expectedException.expect(NoAmountException.class);
+        expectedException.expectMessage("No amount in expression");
+
+        currencyAmountParser.parse("EUR test");
+    }
+
+    @Test
+    public void givenNullWhenParseThenNoAmountException() throws Exception {
+        // assert
+        expectedException.expect(NoAmountException.class);
+        expectedException.expectMessage("amountWithCurrency is blank");
+
+        currencyAmountParser.parse(null);
+    }
 
 }

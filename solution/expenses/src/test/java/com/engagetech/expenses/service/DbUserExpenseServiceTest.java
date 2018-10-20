@@ -2,10 +2,12 @@ package com.engagetech.expenses.service;
 
 import com.engagetech.expenses.TestCurrencies;
 import com.engagetech.expenses.dto.ExpenseDTO;
+import com.engagetech.expenses.dto.VatCalculationDTO;
 import com.engagetech.expenses.mapper.CurrencyMapper;
 import com.engagetech.expenses.mapper.CurrencyMapperImpl;
 import com.engagetech.expenses.mapper.ExpenseMapper;
 import com.engagetech.expenses.mapper.ExpenseMapperImpl;
+import com.engagetech.expenses.model.Currency;
 import com.engagetech.expenses.model.CurrencyAmount;
 import com.engagetech.expenses.model.Expense;
 import com.engagetech.expenses.model.User;
@@ -31,7 +33,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Stream;
 
-import static com.engagetech.expenses.ExpensesApplicationTestHelper.USER_ID;
+import static com.engagetech.expenses.ExpensesApplicationJunitTestHelper.USER_ID;
 import static com.engagetech.expenses.TestCurrencies.EUR_GBP_RATE;
 import static com.engagetech.expenses.TestCurrencies.eurCurrency;
 import static com.engagetech.expenses.TestCurrencies.gbpCurrency;
@@ -46,6 +48,7 @@ public class DbUserExpenseServiceTest {
     private static final long EXPENSE_ID = 1L;
     private static final String INPUT_AMOUNT = "100 EUR";
     private static final BigDecimal OUTPUT_AMOUNT = new BigDecimal("88.15");
+    private static final BigDecimal VAT_AMOUNT = new BigDecimal("17.63");
     private static final CurrencyAmount currencyAmount = new CurrencyAmount(eurCurrency, new BigDecimal("100.00"));
     private static final VatData vatData = new VatData(new BigDecimal("20.00"), new BigDecimal("20.00"));
 
@@ -55,6 +58,7 @@ public class DbUserExpenseServiceTest {
     public final ExpectedException expectedException = ExpectedException.none();
 
     private final ExpenseMapper expenseMapper = new ExpenseMapperImpl();
+    private final CurrencyMapper currencyMapper = new CurrencyMapperImpl();
     private final ExpenseDatePolicy expenseDatePolicy = new PastExpenseDatePolicy(10);
 
     private DbUserExpenseService expenseService;
@@ -91,7 +95,7 @@ public class DbUserExpenseServiceTest {
                 });
 
         expenseService = new DbUserExpenseService(
-                expenseRepository, expenseMapper, userService, currencyAmountParser,
+                expenseRepository, expenseMapper, currencyMapper, userService, currencyAmountParser,
                 expenseDatePolicy, exchangeCalculator, vatCalculator
         );
     }
@@ -132,6 +136,90 @@ public class DbUserExpenseServiceTest {
         errorCollector.checkThat(result.getDate(), is(addExpenseCommand.getDate()));
         errorCollector.checkThat(result.getReason(), is(addExpenseCommand.getReason()));
         errorCollector.checkThat(result.getUserId(), is(USER_ID));
+    }
+
+    @Test
+    public void givenAddExpenseCommandWithoutExchangeResultWhenProcessThenExchangeProcessException() throws Exception {
+        // arrange
+        final LocalDate today = LocalDate.now();
+
+        AddExpenseCommand addExpenseCommand = new AddExpenseCommand();
+        addExpenseCommand.setAmount(INPUT_AMOUNT);
+        addExpenseCommand.setDate(today);
+        addExpenseCommand.setReason("simple");
+
+        when(exchangeCalculator.calculate(addExpenseCommand.getDate(), currencyAmount))
+                .thenReturn(Optional.empty());
+
+        // assert
+        expectedException.expect(ExchangeProcessException.class);
+        expectedException.expectMessage("Cannot calculate exchange for");
+
+        // action
+        expenseService.process(USER_ID, addExpenseCommand);
+    }
+
+    @Test
+    public void givenCalculateVatCommandWhenCalculateThenVatCalculation() throws Exception {
+        // arrange
+        Currency targetCurrency = gbpCurrency;
+        CalculateVatCommand command = new CalculateVatCommand();
+        command.setAmount(INPUT_AMOUNT);
+        command.setDate(LocalDate.now());
+
+        when(exchangeCalculator.calculate(command.getDate(), currencyAmount))
+                .thenReturn(Optional.of(new ExchangeResult(command.getDate(), EUR_GBP_RATE,
+                        currencyAmount, targetCurrency)));
+
+        // action
+        VatCalculationDTO result = expenseService.calculate(command);
+
+        // assert
+        errorCollector.checkThat(result.getAmount(), is(OUTPUT_AMOUNT));
+        errorCollector.checkThat(result.getCurrency(), is(currencyMapper.toDto(targetCurrency)));
+        errorCollector.checkThat(result.getVatAmount(), is(vatData.getVatAmount()));
+        errorCollector.checkThat(result.getVatRate(), is(vatData.getVatRate()));
+    }
+
+    @Test
+    public void givenNoExchangeDataWhenCalculateThenExchangeProcessException() throws Exception {
+        // arrange
+        CalculateVatCommand command = new CalculateVatCommand();
+        command.setAmount(INPUT_AMOUNT);
+        command.setDate(LocalDate.now());
+
+        when(exchangeCalculator.calculate(command.getDate(), currencyAmount))
+                .thenReturn(Optional.empty());
+
+        // assert
+        expectedException.expect(ExchangeProcessException.class);
+        expectedException.expectMessage("Cannot calculate exchange for " +
+                currencyAmount.getCurrency());
+
+        // action
+        expenseService.calculate(command);
+    }
+
+    @Test
+    public void givenCalculateVatCommandWithoutDateWhenCalculateThenVatCalculationWithCurrentDate() throws Exception {
+        // arrange
+        Currency targetCurrency = gbpCurrency;
+        final LocalDate today = LocalDate.now();
+        CalculateVatCommand command = new CalculateVatCommand();
+        command.setAmount(INPUT_AMOUNT);
+
+        when(exchangeCalculator.calculate(today, currencyAmount))
+                .thenReturn(Optional.of(new ExchangeResult(command.getDate(), EUR_GBP_RATE,
+                        currencyAmount, targetCurrency)));
+
+        // action
+        VatCalculationDTO result = expenseService.calculate(command);
+
+        // assert
+        errorCollector.checkThat(result.getAmount(), is(OUTPUT_AMOUNT));
+        errorCollector.checkThat(result.getCurrency(), is(currencyMapper.toDto(targetCurrency)));
+        errorCollector.checkThat(result.getVatAmount(), is(vatData.getVatAmount()));
+        errorCollector.checkThat(result.getVatRate(), is(vatData.getVatRate()));
     }
 
     @Test
@@ -181,5 +269,55 @@ public class DbUserExpenseServiceTest {
         errorCollector.checkThat(expenseDTO1.getReason(), is(expense1.getReason()));
         errorCollector.checkThat(expenseDTO1.getUserId(), is(USER_ID));
         errorCollector.checkThat(userExpenses.get(1).getReason(), is(expense2.getReason()));
+    }
+
+    @Test
+    public void givenExpenseInDbWhenGetUserExpenseThenExpenseDTO() throws Exception {
+        // arrange
+        final LocalDate today = LocalDate.now();
+
+        CurrencyAmount srcCurrencyAmount = new CurrencyAmount(
+                TestCurrencies.eurCurrency, new BigDecimal("100.00"));
+        CurrencyAmount destCurrencyAmount = new CurrencyAmount(
+                TestCurrencies.gbpCurrency, new BigDecimal("100.00"));
+
+        User user = new User();
+        user.setEmail("email@test.com");
+        user.setUsername("test");
+        user.setId(USER_ID);
+
+        Expense expense = new Expense();
+        expense.setDate(today);
+        expense.setSourceCurrencyAmount(srcCurrencyAmount);
+        expense.setCurrencyAmount(destCurrencyAmount);
+        expense.setVatData(vatData);
+        expense.setReason("reason1");
+        expense.setUser(user);
+        when(expenseRepository.findById(EXPENSE_ID))
+                .thenReturn(Optional.of(expense));
+
+        // action
+        ExpenseDTO expenseDTO = expenseService.getUserExpense(EXPENSE_ID);
+
+        // assert
+        errorCollector.checkThat(expenseDTO.getDate(), is(today));
+        errorCollector.checkThat(expenseDTO.getVatAmount(), is(vatData.getVatAmount()));
+        errorCollector.checkThat(expenseDTO.getAmount(), is(destCurrencyAmount.getAmount()));
+        errorCollector.checkThat(expenseDTO.getReason(), is(expense.getReason()));
+        errorCollector.checkThat(expenseDTO.getUserId(), is(USER_ID));
+    }
+
+    @Test
+    public void givenNoExpenseWhenGetUserExpenseThenExpenseNotFoundException() throws Exception {
+        // arrange
+        when(expenseRepository.findById(EXPENSE_ID))
+                .thenReturn(Optional.empty());
+
+        // assert
+        expectedException.expect(ExpenseNotFoundException.class);
+        expectedException.expectMessage("Not found expense with id " + EXPENSE_ID);
+
+        // action
+        ExpenseDTO expense = expenseService.getUserExpense(EXPENSE_ID);
     }
 }
