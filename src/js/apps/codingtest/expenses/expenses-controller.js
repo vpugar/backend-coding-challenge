@@ -29,7 +29,31 @@ app.controller("ctrlExpenses", ["$rootScope", "$scope", "config", "restalchemy",
 		restExpenses.get().then(function(expenses) {
 			$scope.expenses = expenses;
 		});
-	}
+	};
+
+	var loadVatAndCurrencyData = function(vatCalculation) {
+        $scope.newExpense.vatCalculation = vatCalculation;
+        $scope.newExpense.vatCalculation.amountWithCurrency =
+			vatCalculation.amount.toFixed(2) + ' ' + vatCalculation.currency.shortName;
+        $scope.newExpense.vatCalculation.vatWithCurrency =
+            vatCalculation.vatAmount.toFixed(2) + ' ' + vatCalculation.currency.shortName;
+    };
+
+	var getVatAndCurrencyCalculation = function() {
+        // Get calculation data via REST
+		var params = {
+			date: $scope.newExpense.date,
+			amount: $scope.newExpense.amount
+		};
+
+		restExpenses.at('expenses/calculations').get(params)
+			.then(function (vatCalculation) {
+				loadVatAndCurrencyData(vatCalculation);
+			})
+			.error(function () {
+				$scope.newExpense.vatCalculation = {};
+			});
+    };
 
 	$scope.saveExpense = function() {
 		if ($scope.expensesform.$valid) {
@@ -43,6 +67,14 @@ app.controller("ctrlExpenses", ["$rootScope", "$scope", "config", "restalchemy",
 
 	$scope.clearExpense = function() {
 		$scope.newExpense = {};
+	};
+
+	$scope.amountChange = function() {
+        if ($scope.newExpense.amount) {
+        	getVatAndCurrencyCalculation();
+        } else {
+            $scope.newExpense.vatCalculation = {};
+        }
 	};
 
 	// Initialise scope variables

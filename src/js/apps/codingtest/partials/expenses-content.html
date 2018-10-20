@@ -9,19 +9,35 @@
 		<ul>
 			<li>
 				<label>Date</label>
-				<input type="text" ng-required="true" ng-model="newExpense.date" ui-date="dateOptions" placeholder="dd/mm/yyyy" />
+				<input type="text" ng-required="true" ng-model="newExpense.date" ui-date="dateOptions"
+					   placeholder="dd/mm/yyyy" ng-change="amountChange()"/>
 			</li>
 			<li>
 				<label>Amount</label>
-				<input type="text" ng-required="true" ng-model="newExpense.amount" placeholder="00.00" />
+				<input type="text" ng-required="true" ng-model="newExpense.amount" placeholder="00.00"
+					   ng-change="amountChange()"/>
+			</li>
+			<div ng-if="newExpense.vatCalculation.exchangeCalculation">
+				<li>
+					<label>Amount <span class="small">(calculated from exchange rate)</span></label>
+					<input type="text" ng-readonly="true" ng-model="newExpense.vatCalculation.amountWithCurrency"
+						   placeholder="00.00"/>
+				</li>
+			</div>
+			<li>
+				<label>VAT</label>
+				<input type="text" ng-readonly="true" ng-model="newExpense.vatCalculation.vatWithCurrency"
+					   placeholder="00.00"/>
 			</li>
 			<li>
 				<label>Reason</label>
-					<textarea at-auto-resize ng-required="true" ng-model="newExpense.reason" ng-trim="false" placeholder="why oh why?"></textarea>
+				<textarea at-auto-resize ng-required="true" ng-model="newExpense.reason" ng-trim="false"
+						  placeholder="why oh why?"></textarea>
 			</li>
 			<li>
 				<label></label>
-				<button ng-click="saveExpense()" class="solid">Save Expense</button> <button ng-click="clearExpense()">cancel</button>
+				<button ng-click="saveExpense()" class="solid">Save Expense</button>
+				<button ng-click="clearExpense()">cancel</button>
 			</li>
 		</ul>
 	</form>
