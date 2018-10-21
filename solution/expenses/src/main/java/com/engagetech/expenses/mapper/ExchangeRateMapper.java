@@ -15,9 +15,4 @@ public interface ExchangeRateMapper extends EntityMapper<ExchangeRateDTO, Exchan
     @Mapping(source = "targetCurrency.id", target = "targetCurrencyId")
     ExchangeRateDTO toDto(ExchangeRate entity);
 
-    @Override
-    @Mapping(source = "sourceCurrencyId", target = "sourceCurrency")
-    @Mapping(source = "targetCurrencyId", target = "targetCurrency")
-    ExchangeRate toEntity(ExchangeRateDTO dto);
-
 }

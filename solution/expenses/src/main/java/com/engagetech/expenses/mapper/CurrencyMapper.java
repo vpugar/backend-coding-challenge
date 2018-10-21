@@ -12,7 +12,4 @@ public interface CurrencyMapper extends EntityMapper<CurrencyDTO, Currency> {
     @Override
     CurrencyDTO toDto(Currency entity);
 
-    @Override
-    Currency toEntity(CurrencyDTO dto);
-
 }

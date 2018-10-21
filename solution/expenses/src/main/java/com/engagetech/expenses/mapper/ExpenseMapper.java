@@ -16,11 +16,4 @@ public interface ExpenseMapper extends EntityMapper<ExpenseDTO, Expense> {
     @Mapping(source = "vatData.vatAmount", target = "vatAmount")
     ExpenseDTO toDto(Expense entity);
 
-    @Override
-    @Mapping(source = "userId", target = "user")
-    @Mapping(target = "sourceCurrencyAmount", ignore = true)
-    @Mapping(target = "currencyAmount", ignore = true)
-    @Mapping(target = "vatData", ignore = true)
-    Expense toEntity(ExpenseDTO dto);
-
 }

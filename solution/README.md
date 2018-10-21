@@ -19,7 +19,7 @@ How to run the your solution...
 
 > Note: tested on linux (Ubuntu)
 
-*Step 1:* Build project (this will start unit tests automatically):
+**Step 1:** Build project (this will start unit tests automatically):
 
 ```bash
 cd backend-coding-challenge/solution/expenses
@@ -37,7 +37,9 @@ chmod 755 gradlew
 ./gradlew clean build integrationTest
 ```
 
-*Step 2:* Run script for creating docker image: 
+> To use code coverage check use task `jacocoTestReport` on the of gradle line. Results are in expenses/build/reports/jacoco/test/html/index.html.
+
+**Step 2:** Run script for creating docker image: 
 
 ```bash
 cd backend-coding-challenge/solution
@@ -45,7 +47,7 @@ chmod 755 build-docker.sh
 ./build-docker.sh
 ```
 
-*Step 3:* Run application:
+**Step 3:** Run application:
 
 ```bash
 cd backend-coding-challenge/solution
