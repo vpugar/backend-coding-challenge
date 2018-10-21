@@ -19,13 +19,13 @@
 			</li>
 			<div ng-if="newExpense.vatCalculation.exchangeCalculation">
 				<li>
-					<label>Amount <span class="small">(calculated from exchange rate)</span></label>
+					<label>Amount <span class="small">(&pound;)</span></label>
 					<input type="text" ng-readonly="true" ng-model="newExpense.vatCalculation.amountWithCurrency"
 						   placeholder="00.00"/>
 				</li>
 			</div>
 			<li>
-				<label>VAT</label>
+				<label>VAT (&pound;)</label>
 				<input type="text" ng-readonly="true" ng-model="newExpense.vatCalculation.vatWithCurrency"
 					   placeholder="00.00"/>
 			</li>
