@@ -2,7 +2,9 @@ package com.engagetech.expenses.exceptions;
 
 import com.engagetech.expenses.service.ExpenseNotFoundException;
 import com.engagetech.expenses.service.ExpenseProcessException;
+import com.engagetech.expenses.service.UserNotFoundException;
 import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
@@ -16,7 +18,14 @@ public class GlobalExceptionHandler {
         return new ApiErrorResponse(e);
     }
 
-    @ExceptionHandler({ExpenseProcessException.class, IllegalArgumentException.class})
+    @ExceptionHandler(UserNotFoundException.class)
+    @ResponseStatus(HttpStatus.FORBIDDEN)
+    public ApiErrorResponse handleExpenseNotFoundException(UserNotFoundException e) {
+        return new ApiErrorResponse(e);
+    }
+
+    @ExceptionHandler({ExpenseProcessException.class, IllegalArgumentException.class,
+            MethodArgumentNotValidException.class})
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ApiErrorResponse handleExpenseProcessException(Exception e) {
         return new ApiErrorResponse(e);

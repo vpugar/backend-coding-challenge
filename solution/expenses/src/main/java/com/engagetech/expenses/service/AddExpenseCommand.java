@@ -1,7 +1,8 @@
 package com.engagetech.expenses.service;
 
-
 import com.engagetech.expenses.util.Constants;
+import com.fasterxml.jackson.annotation.JsonFormat;
+import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
@@ -10,9 +11,7 @@ import org.hibernate.validator.constraints.Length;
 import javax.validation.constraints.NotNull;
 import java.time.LocalDate;
 
-@Getter
-@Setter
-@ToString
+@Data
 public class AddExpenseCommand {
 
     @NotNull

@@ -10,6 +10,7 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 public class DdUserService implements UserService {
 
+    // TODO add tests
     private final UserRepository userRepository;
 
     @Override

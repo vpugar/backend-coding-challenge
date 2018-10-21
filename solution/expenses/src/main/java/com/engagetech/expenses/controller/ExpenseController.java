@@ -1,8 +1,10 @@
 package com.engagetech.expenses.controller;
 
-
 import com.engagetech.expenses.dto.ExpenseDTO;
+import com.engagetech.expenses.dto.VatCalculationDTO;
 import com.engagetech.expenses.service.AddExpenseCommand;
+import com.engagetech.expenses.service.CalculateVatCommand;
+import com.engagetech.expenses.service.ExpenseNotFoundException;
 import com.engagetech.expenses.service.ExpenseProcessException;
 import com.engagetech.expenses.service.UserExpenseService;
 import com.engagetech.expenses.service.UserNotFoundException;
@@ -10,6 +12,7 @@ import io.micrometer.core.annotation.Timed;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -47,7 +50,7 @@ public class ExpenseController {
 
     @GetMapping
     @Timed
-    public ResponseEntity<List<ExpenseDTO>> getExpenses() throws UserNotFoundException {
+    public ResponseEntity<List<ExpenseDTO>> getUserExpenses() throws UserNotFoundException {
         // TODO hardcoded userId
         // TODO Check user
         List<ExpenseDTO> userExpenses = userExpenseService.getUserExpenses(1);
@@ -65,7 +68,7 @@ public class ExpenseController {
 
     @GetMapping("/calculations")
     @Timed
-    public ResponseEntity<VatCalculationDTO> calculate(CalculateVatCommand command)
+    public ResponseEntity<VatCalculationDTO> calculate(@Valid CalculateVatCommand command)
             throws ExpenseProcessException {
         final VatCalculationDTO vatCalculation = userExpenseService.calculate(command);
         return ResponseEntity.ok(vatCalculation);
