@@ -17,6 +17,15 @@ public class CurrencyAmountParser {
     private final DefaultCurrency defaultCurrency;
     private final CurrencyService currencyService;
 
+    private static int positionOfAmount(String[] amountWithCurrency) throws NoAmountException {
+        for (int position = 0; position < amountWithCurrency.length; position++) {
+            if (NumberUtils.isCreatable(amountWithCurrency[position])) {
+                return position;
+            }
+        }
+        throw new NoAmountException("No amount in expression");
+    }
+
     public CurrencyAmount parse(String amountWithCurrency) throws NoAmountException, UnknownCurrencyException {
 
         if (StringUtils.isBlank(amountWithCurrency)) {
@@ -49,14 +58,5 @@ public class CurrencyAmountParser {
         }
 
         throw new NoAmountException("Cannot parse amount");
-    }
-
-    private static int positionOfAmount(String[] amountWithCurrency) throws NoAmountException {
-        for (int position = 0; position < amountWithCurrency.length; position++) {
-            if (NumberUtils.isCreatable(amountWithCurrency[position])) {
-                return position;
-            }
-        }
-        throw new NoAmountException("No amount in expression");
     }
 }

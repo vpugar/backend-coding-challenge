@@ -88,17 +88,17 @@ public class ExpenseControllerIntegrationTest {
     @Autowired
     private DefaultCurrency defaultCurrency;
 
+    @AfterClass
+    public static void destroy() {
+        mysqlSQLContainer.close();
+    }
+
     @Before
     public void prepare() {
         ExpenseController controller = new ExpenseController(userExpenseService);
         mockMvc = standaloneSetup(controller)
                 .setControllerAdvice(new GlobalExceptionHandler(), controller)
                 .build();
-    }
-
-    @AfterClass
-    public static void destroy() {
-        mysqlSQLContainer.close();
     }
 
     @Test

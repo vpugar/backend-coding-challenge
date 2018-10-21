@@ -17,6 +17,6 @@ public class DdUserService implements UserService {
     @Transactional(readOnly = true)
     public User getUser(long userId) throws UserNotFoundException {
         return userRepository.findById(userId)
-              .orElseThrow(() -> new UserNotFoundException("User not found"));
+                .orElseThrow(() -> new UserNotFoundException("User not found"));
     }
 }

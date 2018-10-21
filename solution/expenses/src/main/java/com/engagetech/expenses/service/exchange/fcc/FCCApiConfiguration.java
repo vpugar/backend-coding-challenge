@@ -22,13 +22,13 @@ public class FCCApiConfiguration {
     @Bean
     public FCCApiClient fixerIoExchangeConnector() {
         ObjectMapper objectMapper = new ObjectMapper()
-              .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, true);
+                .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, true);
         return Feign
-              .builder()
-              .encoder(new JacksonEncoder(objectMapper))
-              .decoder(new JacksonDecoder(objectMapper))
-              .logLevel(Level.FULL)
-              .target(FCCApiClient.class, apiUrl);
+                .builder()
+                .encoder(new JacksonEncoder(objectMapper))
+                .decoder(new JacksonDecoder(objectMapper))
+                .logLevel(Level.FULL)
+                .target(FCCApiClient.class, apiUrl);
     }
 
 }

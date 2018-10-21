@@ -19,8 +19,8 @@ public class SalesTaxVatCalculator implements VatCalculator {
     private final BigDecimal salesTaxPercentage;
 
     public SalesTaxVatCalculator(
-          DefaultCurrency defaultCurrency,
-          @Value("${app.expense.vat-calculator.sales-tax.percentage}") BigDecimal salesTaxPercentage) {
+            DefaultCurrency defaultCurrency,
+            @Value("${app.expense.vat-calculator.sales-tax.percentage}") BigDecimal salesTaxPercentage) {
         this.salesTaxPercentage = salesTaxPercentage;
         this.defaultCurrency = defaultCurrency;
     }
@@ -30,9 +30,9 @@ public class SalesTaxVatCalculator implements VatCalculator {
         int scale = defaultCurrency.getTarget().getScale();
         BigDecimal vatRate = salesTaxPercentage;
         BigDecimal vatAmount = vatRate
-              .multiply(value)
-              .divide(PERCENTAGE_100)
-              .setScale(scale, RoundingMode.HALF_UP);
+                .multiply(value)
+                .divide(PERCENTAGE_100)
+                .setScale(scale, RoundingMode.HALF_UP);
 
         return new VatData(vatRate, vatAmount);
     }

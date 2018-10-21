@@ -21,11 +21,6 @@ import static org.mockito.Mockito.when;
 @RunWith(Parameterized.class)
 public class SalesTaxVatCalculatorParameterizedTest {
 
-    @Mock
-    private DefaultCurrency defaultCurrency;
-
-    private VatCalculator vatCalculator;
-
     @Parameter
     public BigDecimal vat;
     @Parameter(1)
@@ -34,6 +29,9 @@ public class SalesTaxVatCalculatorParameterizedTest {
     public BigDecimal value;
     @Parameter(3)
     public BigDecimal expected;
+    @Mock
+    private DefaultCurrency defaultCurrency;
+    private VatCalculator vatCalculator;
 
     @Parameters(name = "{index}: tax={0} scale={1} value={3}")
     public static Object[][] data() {

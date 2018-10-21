@@ -18,6 +18,22 @@ import java.util.Optional;
  */
 public interface FCCApiClient {
 
+    @RequestLine("GET /convert?q={q}&compact=ultra&date={date}")
+    CurrencyPair convertApi(@Param("date") String date, @Param("q") String pairs);
+
+    default Optional<BigDecimal> convert(LocalDate date, Currency source, Currency target) {
+        String currencyPair = Helper.formatCurrencyPair(source, target);
+        final String formattedDate = Helper.DATE_TIME_FORMATTER.format(date);
+        CurrencyPair pair = convertApi(
+                formattedDate, StringUtils.join(new String[]{currencyPair}, ','));
+
+        DateRate dateRate = pair.get(currencyPair);
+        if (dateRate != null) {
+            return Optional.ofNullable(dateRate.get(formattedDate));
+        }
+        return Optional.empty();
+    }
+
     class Helper {
 
         static final DateTimeFormatter DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd");
@@ -45,21 +61,5 @@ public interface FCCApiClient {
         public DateRate clone() {
             return (DateRate) super.clone();
         }
-    }
-
-    @RequestLine("GET /convert?q={q}&compact=ultra&date={date}")
-    CurrencyPair convertApi(@Param("date") String date, @Param("q") String pairs);
-
-    default Optional<BigDecimal> convert(LocalDate date, Currency source, Currency target) {
-        String currencyPair = Helper.formatCurrencyPair(source, target);
-        final String formattedDate = Helper.DATE_TIME_FORMATTER.format(date);
-        CurrencyPair pair = convertApi(
-                formattedDate, StringUtils.join(new String[]{currencyPair}, ','));
-
-        DateRate dateRate = pair.get(currencyPair);
-        if (dateRate != null) {
-            return Optional.ofNullable(dateRate.get(formattedDate));
-        }
-        return Optional.empty();
     }
 }

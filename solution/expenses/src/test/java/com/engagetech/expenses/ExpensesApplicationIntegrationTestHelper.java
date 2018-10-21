@@ -16,6 +16,14 @@ public class ExpensesApplicationIntegrationTestHelper {
                     .withPassword("test")
                     .withStartupTimeout(Duration.ofSeconds(600L));
 
+    private ExpensesApplicationIntegrationTestHelper() {
+        throw new UnsupportedOperationException("Cannot use constructor");
+    }
+
+    public static MySQLContainer getMysqlSQLContainer() {
+        return mysqlSQLContainer;
+    }
+
     public static class Initializer implements ApplicationContextInitializer<ConfigurableApplicationContext> {
         public void initialize(ConfigurableApplicationContext configurableApplicationContext) {
             TestPropertyValues.of(
@@ -24,13 +32,5 @@ public class ExpensesApplicationIntegrationTestHelper {
                     "spring.datasource.password=" + mysqlSQLContainer.getPassword()
             ).applyTo(configurableApplicationContext.getEnvironment());
         }
-    }
-
-    public static MySQLContainer getMysqlSQLContainer() {
-        return mysqlSQLContainer;
-    }
-
-    private ExpensesApplicationIntegrationTestHelper() {
-        throw new UnsupportedOperationException("Cannot use constructor");
     }
 }

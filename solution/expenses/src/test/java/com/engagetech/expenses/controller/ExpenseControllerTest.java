@@ -50,6 +50,17 @@ public class ExpenseControllerTest {
     @MockBean
     private UserExpenseService userExpenseService;
 
+    private static ExpenseDTO createExpense(LocalDate today) {
+        ExpenseDTO expense = new ExpenseDTO();
+        expense.setDate(today);
+        expense.setReason("this is the reason");
+        expense.setAmount(new BigDecimal("100.00"));
+        expense.setId(1L);
+        expense.setUserId(USER_ID);
+        expense.setVatAmount(new BigDecimal("20.00"));
+        return expense;
+    }
+
     @Test
     public void given100GBPWhenAddExpenseExpenseThenReturnAmount100() throws Exception {
         // arrange
@@ -357,16 +368,5 @@ public class ExpenseControllerTest {
                 command.getAmount())
                 .contentType(APPLICATION_JSON_UTF8))
                 .andExpect(status().isInternalServerError());
-    }
-
-    private static ExpenseDTO createExpense(LocalDate today) {
-        ExpenseDTO expense = new ExpenseDTO();
-        expense.setDate(today);
-        expense.setReason("this is the reason");
-        expense.setAmount(new BigDecimal("100.00"));
-        expense.setId(1L);
-        expense.setUserId(USER_ID);
-        expense.setVatAmount(new BigDecimal("20.00"));
-        return expense;
     }
 }

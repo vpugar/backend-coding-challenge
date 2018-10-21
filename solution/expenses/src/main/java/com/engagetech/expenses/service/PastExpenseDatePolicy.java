@@ -13,7 +13,7 @@ public class PastExpenseDatePolicy implements ExpenseDatePolicy {
     private final int allowedDaysInPast;
 
     public PastExpenseDatePolicy(
-          @Value("${app.expense.expense-date-policy.allowed-days-in-past.days}") int allowedDaysInPast) {
+            @Value("${app.expense.expense-date-policy.allowed-days-in-past.days}") int allowedDaysInPast) {
         this.allowedDaysInPast = allowedDaysInPast;
     }
 

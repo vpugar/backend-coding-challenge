@@ -21,6 +21,10 @@ public final class ExpensesApplicationJunitTestHelper {
             MediaType.APPLICATION_JSON.getSubtype(),
             StandardCharsets.UTF_8);
 
+    private ExpensesApplicationJunitTestHelper() {
+        throw new UnsupportedOperationException("Cannot use constructor");
+    }
+
     public static byte[] convertObjectToJsonBytes(Object object) throws IOException {
         ObjectMapper mapper = new ObjectMapper();
         mapper.setSerializationInclusion(JsonInclude.Include.NON_NULL);
@@ -43,9 +47,5 @@ public final class ExpensesApplicationJunitTestHelper {
      */
     public static Matcher<Double> closeToDouble(BigDecimal value) {
         return IsCloseTo.closeTo(value.doubleValue(), DEFAULT_PRECISION);
-    }
-
-    private ExpensesApplicationJunitTestHelper() {
-        throw new UnsupportedOperationException("Cannot use constructor");
     }
 }

@@ -28,6 +28,11 @@ public class CurrencyAmountParserParameterizedTest {
     public BigDecimal expected;
     @Parameter(2)
     public String currencyShortName;
+    @Mock
+    private DefaultCurrency defaultCurrency;
+    @Mock
+    private CurrencyService currencyService;
+    private CurrencyAmountParser currencyAmountParser;
 
     @Parameters(name = "{index}: value={0}")
     public static Object[][] data() {
@@ -42,13 +47,6 @@ public class CurrencyAmountParserParameterizedTest {
                 {"   EUR   120.00   ", new BigDecimal("120.00"), "EUR"}
         };
     }
-
-    @Mock
-    private DefaultCurrency defaultCurrency;
-    @Mock
-    private CurrencyService currencyService;
-
-    private CurrencyAmountParser currencyAmountParser;
 
     @Before
     public void prepare() throws Exception {

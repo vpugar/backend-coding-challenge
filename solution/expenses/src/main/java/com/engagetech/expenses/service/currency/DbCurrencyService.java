@@ -17,7 +17,7 @@ public class DbCurrencyService implements CurrencyService {
     @Transactional(readOnly = true)
     public Currency getCurrency(@NonNull String shortName) throws UnknownCurrencyException {
         return currencyRepository.findByShortName(shortName)
-              .orElseThrow(() -> new UnknownCurrencyException("Currency " + shortName + " not found"));
+                .orElseThrow(() -> new UnknownCurrencyException("Currency " + shortName + " not found"));
     }
 
 }

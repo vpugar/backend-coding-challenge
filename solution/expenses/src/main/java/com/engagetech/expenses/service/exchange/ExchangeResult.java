@@ -17,7 +17,7 @@ public class ExchangeResult {
     private final CurrencyAmount targetAmount;
 
     public ExchangeResult(LocalDate date, BigDecimal rate, CurrencyAmount sourceAmount,
-          Currency targetCurrency) {
+                          Currency targetCurrency) {
         this.date = date;
         this.rate = rate;
         this.sourceAmount = sourceAmount;
@@ -26,7 +26,7 @@ public class ExchangeResult {
 
     private BigDecimal calculateTargetAmount(Currency targetCurrency) {
         return rate
-              .multiply(sourceAmount.getAmount())
-              .setScale(targetCurrency.getScale(), RoundingMode.HALF_UP);
+                .multiply(sourceAmount.getAmount())
+                .setScale(targetCurrency.getScale(), RoundingMode.HALF_UP);
     }
 }
