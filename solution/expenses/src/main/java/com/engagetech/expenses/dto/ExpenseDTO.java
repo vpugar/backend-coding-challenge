@@ -1,6 +1,5 @@
 package com.engagetech.expenses.dto;
 
-import com.engagetech.expenses.util.Constants;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;

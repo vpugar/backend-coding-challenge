@@ -1,7 +1,6 @@
 package com.engagetech.expenses.service.currency;
 
 import com.engagetech.expenses.model.Currency;
-import com.engagetech.expenses.model.Currency;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;

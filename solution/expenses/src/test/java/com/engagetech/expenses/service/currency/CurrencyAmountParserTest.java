@@ -1,7 +1,5 @@
 package com.engagetech.expenses.service.currency;
 
-import static org.mockito.Mockito.when;
-
 import com.engagetech.expenses.TestCurrencies;
 import com.engagetech.expenses.model.Currency;
 import org.junit.Before;
@@ -12,6 +10,8 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
 import java.util.Collections;
+
+import static org.mockito.Mockito.when;
 
 public class CurrencyAmountParserTest {
 

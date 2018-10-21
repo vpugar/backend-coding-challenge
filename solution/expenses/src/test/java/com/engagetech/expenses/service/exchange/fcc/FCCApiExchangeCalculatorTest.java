@@ -16,7 +16,6 @@ import java.math.RoundingMode;
 import java.time.LocalDate;
 import java.util.Optional;
 
-import static com.engagetech.expenses.TestCurrencies.*;
 import static com.engagetech.expenses.TestCurrencies.EUR_GBP_RATE;
 import static com.engagetech.expenses.TestCurrencies.eurCurrency;
 import static com.engagetech.expenses.TestCurrencies.gbpCurrency;
