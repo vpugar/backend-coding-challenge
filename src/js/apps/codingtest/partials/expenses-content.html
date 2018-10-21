@@ -3,6 +3,8 @@
 
 	<div bookmarklist id="bookmarks" class="section-list">
 	</div>
+	<div ng-if="!loggedIn" style="text-align: right"><span style="cursor: pointer" ng-click="login()">Login</span></div>
+	<div ng-if="loggedIn" style="text-align: right"><span style=" cursor: pointer" ng-click="logout()">Logout</span></div>
 
 	<h3>Add an expense</h3>
 	<form name="expensesform">
@@ -57,4 +59,5 @@
 			<div class="col-15">{{expense.reason}}</div>
 		</div>
 	</div>
+
 </div>

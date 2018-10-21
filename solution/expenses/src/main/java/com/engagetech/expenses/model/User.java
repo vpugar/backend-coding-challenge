@@ -31,4 +31,7 @@ public final class User implements WithId {
     @Column(nullable = false, unique = true, updatable = false)
     private String email;
 
+    @Column(nullable = false)
+    private String password;
+
 }

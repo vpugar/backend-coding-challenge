@@ -6,11 +6,12 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Optional;
+
 @RequiredArgsConstructor
 @Service
 public class DdUserService implements UserService {
 
-    // TODO add tests
     private final UserRepository userRepository;
 
     @Override
@@ -18,5 +19,11 @@ public class DdUserService implements UserService {
     public User getUser(long userId) throws UserNotFoundException {
         return userRepository.findById(userId)
                 .orElseThrow(() -> new UserNotFoundException("User not found"));
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public Optional<User> getUser(String username) {
+        return userRepository.findByUsername(username);
     }
 }

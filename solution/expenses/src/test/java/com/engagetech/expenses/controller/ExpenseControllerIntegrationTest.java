@@ -9,6 +9,7 @@ import com.engagetech.expenses.model.CurrencyAmount;
 import com.engagetech.expenses.service.AddExpenseCommand;
 import com.engagetech.expenses.service.CalculateVatCommand;
 import com.engagetech.expenses.service.UserExpenseService;
+import com.engagetech.expenses.service.UserService;
 import com.engagetech.expenses.service.currency.DefaultCurrency;
 import com.engagetech.expenses.service.exchange.ExchangeCalculator;
 import com.engagetech.expenses.service.exchange.ExchangeCalculatorService;
@@ -24,6 +25,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.SpyBean;
 import org.springframework.http.HttpHeaders;
+import org.springframework.security.authentication.TestingAuthenticationToken;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.User;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
@@ -35,10 +40,12 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
 import static com.engagetech.expenses.ExpensesApplicationJunitTestHelper.APPLICATION_JSON_UTF8;
+import static com.engagetech.expenses.ExpensesApplicationJunitTestHelper.USERNAME_IN_DB;
 import static com.engagetech.expenses.ExpensesApplicationJunitTestHelper.USER_ID;
 import static com.engagetech.expenses.ExpensesApplicationJunitTestHelper.closeToDouble;
 import static com.engagetech.expenses.ExpensesApplicationJunitTestHelper.convertObjectToJsonBytes;
@@ -80,6 +87,9 @@ public class ExpenseControllerIntegrationTest {
     private UserExpenseService userExpenseService;
 
     @Autowired
+    private UserService userService;
+
+    @Autowired
     private ExchangeCalculatorService exchangeCalculatorService;
 
     @SpyBean(name = "FCCApiExchangeCalculator")
@@ -88,6 +98,8 @@ public class ExpenseControllerIntegrationTest {
     @Autowired
     private DefaultCurrency defaultCurrency;
 
+    private TestingAuthenticationToken authentication;
+
     @AfterClass
     public static void destroy() {
         mysqlSQLContainer.close();
@@ -95,7 +107,13 @@ public class ExpenseControllerIntegrationTest {
 
     @Before
     public void prepare() {
-        ExpenseController controller = new ExpenseController(userExpenseService);
+        final Optional<com.engagetech.expenses.model.User> user = userService.getUser(USERNAME_IN_DB);
+        final com.engagetech.expenses.model.User user1 = user.orElseThrow(() -> new UsernameNotFoundException("No user"));
+        authentication = new TestingAuthenticationToken(
+                new User(user1.getUsername(), user1.getPassword(), Collections.emptyList()), null);
+        SecurityContextHolder.getContext().setAuthentication(authentication);
+
+        ExpenseController controller = new ExpenseController(userService, userExpenseService);
         mockMvc = standaloneSetup(controller)
                 .setControllerAdvice(new GlobalExceptionHandler(), controller)
                 .build();
@@ -162,7 +180,10 @@ public class ExpenseControllerIntegrationTest {
                 .multiply(new BigDecimal(100))
                 .setScale(defaultCurrency.getTarget().getScale(), RoundingMode.HALF_UP);
         errorCollector.checkThat(result.getAmount(), is(amount));
-        errorCollector.checkThat(result.getVatAmount(), is(new BigDecimal("17.64")));
+        errorCollector.checkThat(result.getVatAmount(), is(amount
+                .multiply(new BigDecimal("20"))
+                .divide(new BigDecimal("100"))
+                .setScale(defaultCurrency.getTarget().getScale(), RoundingMode.HALF_UP)));
         errorCollector.checkThat(result.getDate(), is(command.getDate()));
         errorCollector.checkThat(result.getReason(), is(command.getReason()));
         errorCollector.checkThat(result.getUserId(), is(USER_ID));
@@ -209,7 +230,7 @@ public class ExpenseControllerIntegrationTest {
         errorCollector.checkThat(result.getUserId(), is(USER_ID));
 
         // action
-        MvcResult mvcResult2 = mockMvc.perform(post(URL_PREFIX)
+        mockMvc.perform(post(URL_PREFIX)
                 .contentType(APPLICATION_JSON_UTF8)
                 .content(convertObjectToJsonBytes(command)))
                 .andExpect(status().isCreated())
@@ -337,7 +358,4 @@ public class ExpenseControllerIntegrationTest {
                 .andExpect(jsonPath("$.currency.scale", is(defaultCurrency.getTarget().getScale())))
                 .andExpect(jsonPath("$.currency.shortName", is(defaultCurrency.getTarget().getShortName())));
     }
-
-    // TODO security for expense, expenses, addexpense
-
 }

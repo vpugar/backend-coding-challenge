@@ -16,6 +16,9 @@ public final class ExpensesApplicationJunitTestHelper {
 
     public static final double DEFAULT_PRECISION = 0.0000001;
     public static final long USER_ID = 1L;
+    public static final String USERNAME = "test";
+    public static final String USERNAME_IN_DB = "test1";
+    public static final String PASSWORD_IN_DB = "test";
 
     public static final MediaType APPLICATION_JSON_UTF8 = new MediaType(MediaType.APPLICATION_JSON.getType(),
             MediaType.APPLICATION_JSON.getSubtype(),

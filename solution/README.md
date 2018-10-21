@@ -57,7 +57,21 @@ docker-compose -f app.yml up
 
 ## Using application
 
-Open browser URL: http://localhost:8080/ - it will open web application
+Open browser URL: *http://localhost:8080/* - it will open web application
+
+Limitations:
+- Supported currencies 
+
+Currently are supported following currencies: EUR, USD (defined in application.properties). 
+It is possible to extend list by adding new one in property: 
+`app.expense.default-currency.supported-currencies.short-name`, here is possible only to add currencies that are defined 
+in the `currency` configuration table. In `currency` table are now only by default: GBP, EUR, USD, CHF.
+
+- Predefined users 
+
+Users are stored in table `expense_user`. Password is hashed with bcrypt 
+(online generator *https://www.devglan.com/online-tools/bcrypt-hash-generator*).
+Current users by default are user1, user2, user3 with password test.  
 
  
 IMPORTANT

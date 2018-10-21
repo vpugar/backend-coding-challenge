@@ -1,5 +1,6 @@
 package com.engagetech.expenses.exceptions;
 
+import com.engagetech.expenses.controller.UserExpenseException;
 import com.engagetech.expenses.service.ExpenseNotFoundException;
 import com.engagetech.expenses.service.ExpenseProcessException;
 import com.engagetech.expenses.service.UserNotFoundException;
@@ -20,9 +21,9 @@ public class GlobalExceptionHandler {
         return new ApiErrorResponse(e);
     }
 
-    @ExceptionHandler(UserNotFoundException.class)
+    @ExceptionHandler({UserNotFoundException.class, UserExpenseException.class})
     @ResponseStatus(HttpStatus.FORBIDDEN)
-    public ApiErrorResponse handleExpenseNotFoundException(UserNotFoundException e) {
+    public ApiErrorResponse handleExpenseNotFoundException(Exception e) {
         return new ApiErrorResponse(e);
     }
 

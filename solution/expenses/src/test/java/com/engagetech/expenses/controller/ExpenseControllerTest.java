@@ -9,14 +9,18 @@ import com.engagetech.expenses.service.ExpenseNotFoundException;
 import com.engagetech.expenses.service.ExpenseProcessException;
 import com.engagetech.expenses.service.UserExpenseService;
 import com.engagetech.expenses.service.UserNotFoundException;
+import com.engagetech.expenses.service.UserService;
 import org.apache.commons.lang3.StringUtils;
-import org.junit.Ignore;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.HttpHeaders;
+import org.springframework.security.authentication.TestingAuthenticationToken;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.User;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 
@@ -24,8 +28,11 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.Optional;
 
 import static com.engagetech.expenses.ExpensesApplicationJunitTestHelper.APPLICATION_JSON_UTF8;
+import static com.engagetech.expenses.ExpensesApplicationJunitTestHelper.USERNAME;
 import static com.engagetech.expenses.ExpensesApplicationJunitTestHelper.USER_ID;
 import static com.engagetech.expenses.ExpensesApplicationJunitTestHelper.closeToDouble;
 import static com.engagetech.expenses.ExpensesApplicationJunitTestHelper.convertObjectToJsonBytes;
@@ -41,7 +48,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @RunWith(SpringRunner.class)
-@WebMvcTest(ExpenseController.class)
+@WebMvcTest(value = ExpenseController.class, secure = false)
 public class ExpenseControllerTest {
 
     @Autowired
@@ -49,6 +56,22 @@ public class ExpenseControllerTest {
 
     @MockBean
     private UserExpenseService userExpenseService;
+
+    @MockBean
+    private UserService userService;
+
+    private final TestingAuthenticationToken authentication = new TestingAuthenticationToken(
+            new User(USERNAME, USERNAME, Collections.emptyList()), null);
+
+    @Before
+    public void prepare() {
+        SecurityContextHolder.getContext().setAuthentication(authentication);
+
+        com.engagetech.expenses.model.User user = new com.engagetech.expenses.model.User();
+        user.setId(USER_ID);
+        user.setUsername(USERNAME);
+        when(userService.getUser(USERNAME)).thenReturn(Optional.of(user));
+    }
 
     private static ExpenseDTO createExpense(LocalDate today) {
         ExpenseDTO expense = new ExpenseDTO();
@@ -270,17 +293,41 @@ public class ExpenseControllerTest {
                 .andExpect(status().isNotFound());
     }
 
-    // TODO need some working
     @Test
-    @Ignore
-    public void givenUserNotFoundExceptionWhenGetExpenseThenForbidden() throws Exception {
+    public void givenUserExpenseExceptionExceptionWhenGetExpenseThenForbidden() throws Exception {
         // arrange
+        LocalDate today = LocalDate.now();
+        ExpenseDTO expense1 = createExpense(today);
+        expense1.setUserId(USER_ID + 1);
         when(userExpenseService.getUserExpense(1L))
-                .thenThrow(UserNotFoundException.class);
+                .thenReturn(expense1);
 
         // action / assert
         mockMvc.perform(get(URL_PREFIX + "/1"))
-                .andExpect(status().isForbidden());
+                .andExpect(status().isForbidden())
+                .andExpect(jsonPath("$.message", is("User is not owner of expense")));
+    }
+
+    @Test
+    public void givenNoAuthenticationWhenGetExpenseThenForbidden() throws Exception {
+        // arrange
+        SecurityContextHolder.getContext().setAuthentication(null);
+
+        // action / assert
+        mockMvc.perform(get(URL_PREFIX + "/1"))
+                .andExpect(status().isForbidden())
+                .andExpect(jsonPath("$.message", is("No user")));
+    }
+
+    @Test
+    public void givenNoAuthenticatedUserWhenGetExpenseThenForbidden() throws Exception {
+        // arrange
+        when(userService.getUser(USERNAME)).thenReturn(Optional.empty());
+
+        // action / assert
+        mockMvc.perform(get(URL_PREFIX + "/1"))
+                .andExpect(status().isForbidden())
+                .andExpect(jsonPath("$.message", is("No user")));
     }
 
     @Test
