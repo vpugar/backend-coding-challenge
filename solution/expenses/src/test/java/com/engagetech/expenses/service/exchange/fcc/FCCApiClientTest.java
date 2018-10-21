@@ -1,9 +1,11 @@
 package com.engagetech.expenses.service.exchange.fcc;
 
 
+import com.engagetech.expenses.IntegrationTest;
 import com.engagetech.expenses.model.Currency;
 import org.junit.Rule;
 import org.junit.Test;
+import org.junit.experimental.categories.Category;
 import org.junit.rules.ExpectedException;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,6 +28,7 @@ import static org.junit.Assert.assertTrue;
         },
         classes = FCCApiConfiguration.class
 )
+@Category(IntegrationTest.class)
 public class FCCApiClientTest {
 
     private static final Currency gbpCurrency = new Currency("GBP", 2);

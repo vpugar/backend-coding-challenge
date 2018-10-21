@@ -8,6 +8,8 @@ public final class Constants {
 
     public static final String DATE_INPUT_FORMAT = "dd/MM/yyyy";
 
+    public static final String DATE_OUTPUT_FORMAT = "yyyy-MM-dd";
+
     public static final String URL_PREFIX = "/app/expenses";
 
     private Constants() {

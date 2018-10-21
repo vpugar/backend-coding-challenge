@@ -9,6 +9,7 @@ import com.engagetech.expenses.service.ExpenseNotFoundException;
 import com.engagetech.expenses.service.ExpenseProcessException;
 import com.engagetech.expenses.service.UserExpenseService;
 import com.engagetech.expenses.service.UserNotFoundException;
+import org.apache.commons.lang3.StringUtils;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -103,6 +104,24 @@ public class ExpenseControllerTest {
         command.setAmount("100 UNW");
         command.setDate(LocalDate.now());
         command.setReason("for test 1");
+
+        when(userExpenseService.process(USER_ID, command))
+                .thenThrow(ExpenseProcessException.class);
+
+        // action / assert
+        mockMvc.perform(post(URL_PREFIX)
+                .contentType(APPLICATION_JSON_UTF8)
+                .content(convertObjectToJsonBytes(command)))
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    public void givenTooLongReasonWhenAddExpenseExpenseThenBadRequest() throws Exception {
+        // arrange
+        AddExpenseCommand command = new AddExpenseCommand();
+        command.setAmount("100 UNW");
+        command.setDate(LocalDate.now());
+        command.setReason(StringUtils.repeat("12", 1000));
 
         when(userExpenseService.process(USER_ID, command))
                 .thenThrow(ExpenseProcessException.class);
@@ -212,7 +231,7 @@ public class ExpenseControllerTest {
     }
 
     @Test
-    public void givenUserExpenseWhenGetUserExpenseThenResult() throws Exception {
+    public void givenUserExpenseWhenGetExpenseThenResult() throws Exception {
         // arrange
         LocalDate today = LocalDate.now();
         ExpenseDTO expense1 = createExpense(today);
@@ -301,6 +320,21 @@ public class ExpenseControllerTest {
         // action / assert
         mockMvc.perform(get(URL_PREFIX + "/calculations?date={date}&amount={amount}",
                 DateTimeFormatter.ofPattern(DATE_INPUT_FORMAT).format(command.getDate()),
+                command.getAmount()))
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    public void givenWrongDateFormatWhenCalculateThenBadRequest() throws Exception {
+        // arrange
+        CalculateVatCommand command = new CalculateVatCommand();
+        command.setAmount("100 EUR");
+
+        when(userExpenseService.calculate(command))
+                .thenThrow(ExpenseProcessException.class);
+
+        // action / assert
+        mockMvc.perform(get(URL_PREFIX + "/calculations?date=TEST&amount={amount}",
                 command.getAmount()))
                 .andExpect(status().isBadRequest());
     }

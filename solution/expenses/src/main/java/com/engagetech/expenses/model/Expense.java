@@ -1,11 +1,24 @@
 package com.engagetech.expenses.model;
 
+import com.engagetech.expenses.util.Constants;
 import lombok.AccessLevel;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.validator.constraints.Length;
 
-import javax.persistence.*;
+import javax.persistence.AssociationOverride;
+import javax.persistence.AssociationOverrides;
+import javax.persistence.AttributeOverride;
+import javax.persistence.AttributeOverrides;
+import javax.persistence.Column;
+import javax.persistence.Embedded;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.Table;
 import java.time.Instant;
 import java.time.LocalDate;
 
@@ -32,6 +45,7 @@ public final class Expense implements WithId {
     private LocalDate date;
 
     @Column(nullable = false, updatable = false, length = STRING_MAX_LENGTH)
+    @Length(min = 1, max = Constants.STRING_MAX_LENGTH)
     private String reason;
 
     @Embedded

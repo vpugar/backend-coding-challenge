@@ -8,7 +8,6 @@ buildscript {
     dependencies {
         classpath("net.ltgt.gradle:gradle-apt-plugin:$netLtgtAptVersion")
         classpath("org.springframework.boot:spring-boot-gradle-plugin:$springBootVersion")
-        classpath("org.unbroken-dome.gradle-plugins:gradle-testsets-plugin:$gradleTestSetsVersion")
     }
 }
 
@@ -18,10 +17,9 @@ apply plugin: 'io.spring.dependency-management'
 apply plugin: 'java'
 apply plugin: 'net.ltgt.apt'
 apply plugin: 'org.springframework.boot'
-apply plugin: 'org.unbroken-dome.test-sets'
 
 group = 'com.example'
-version = '0.0.3-SNAPSHOT'
+version = '0.0.4-SNAPSHOT'
 sourceCompatibility = 1.8
 
 repositories {
@@ -56,10 +54,23 @@ dependencies {
     testImplementation("org.testcontainers:mysql:$testcontainersVersion")
 }
 
-testSets {
-    integrationTest
-}
-
 bootJar {
     launchScript()
 }
+
+test {
+    useJUnit {
+        excludeCategories 'com.engagetech.expenses.IntegrationTest'
+    }
+}
+
+task integrationTest(type: Test) {
+    useJUnit {
+        includeCategories 'com.engagetech.expenses.IntegrationTest'
+    }
+    // uncomment if the tests reports are not generated
+    // ignoreFailures true
+    reports.html.enabled = false
+}
+
+integrationTest.mustRunAfter test

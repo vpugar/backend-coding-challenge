@@ -2,6 +2,7 @@ package com.engagetech.expenses;
 
 import org.junit.ClassRule;
 import org.junit.Test;
+import org.junit.experimental.categories.Category;
 import org.junit.runner.RunWith;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -13,6 +14,7 @@ import org.testcontainers.containers.MySQLContainer;
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @ContextConfiguration(initializers = ExpensesApplicationIntegrationTestHelper.Initializer.class)
+@Category(IntegrationTest.class)
 public class ExpensesApplicationTest {
 
     private static final Logger logger = LoggerFactory.getLogger(ExpensesApplicationTest.class);

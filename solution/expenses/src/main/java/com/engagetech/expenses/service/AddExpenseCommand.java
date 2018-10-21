@@ -3,9 +3,6 @@ package com.engagetech.expenses.service;
 import com.engagetech.expenses.util.Constants;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;
-import lombok.Getter;
-import lombok.Setter;
-import lombok.ToString;
 import org.hibernate.validator.constraints.Length;
 
 import javax.validation.constraints.NotNull;
@@ -21,6 +18,7 @@ public class AddExpenseCommand {
     @NotNull
     private String amount;
 
+    @NotNull
     @Length(min = 1, max = Constants.STRING_MAX_LENGTH)
     private String reason;
 
