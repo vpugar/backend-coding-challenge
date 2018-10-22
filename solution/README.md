@@ -26,10 +26,11 @@ in single Docker compose configuration (app.yml) described below.
 
 ## Prerequisites
 
-- gulp (of course)
-- java (of course)
-- docker
-- docker-compose
+- gulp
+- java (1.8)
+- gradle (version 4.8)
+- docker (tested with 17.04.0-ce)
+- docker-compose (tested with 1.9.0)
 - application needs following free ports: 
     - 8080 - nginx web server
     - 8181 - expenses REST API
@@ -44,8 +45,7 @@ in single Docker compose configuration (app.yml) described below.
 
 ```bash
 cd backend-coding-challenge/solution/expenses
-chmod 755 gradlew
-./gradlew clean build 
+gradle clean build 
 ```
 
 To also run integration tests use following
@@ -54,8 +54,7 @@ To also run integration tests use following
 
 ```bash
 cd backend-coding-challenge/solution/expenses
-chmod 755 gradlew
-./gradlew clean build integrationTest
+gradle clean build integrationTest
 ```
 
 > To use code coverage check use task `jacocoTestReport` on the of gradle line. Results are in expenses/build/reports/jacoco/test/html/index.html.
@@ -92,8 +91,11 @@ in the `currency` configuration table. In `currency` table are now only by defau
 
 Users are stored in table `expense_user`. Password is hashed with bcrypt 
 (online generator *https://www.devglan.com/online-tools/bcrypt-hash-generator*).
-Current users by default are user1, user2, user3 with password test.  
+Current users by default are *test1*, *test2*, *test3* with password *test*.  
 
+- Remote service The Free Currency Converter API has limitation to retrieve rates maximally one year in past
+
+- In application.properties is defined that maximal expense date can be 100 days in past 
  
 IMPORTANT
 ====
