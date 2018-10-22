@@ -15,9 +15,11 @@ part of JavaDoc).
 For demo purposes the application DB is automatically generated and prepopulated with currency configuration and 
 users. The application API is secured with Basic Auth as simple way to guard API requests.
 
-Static web page is not secured but it triggers Basic auth during first request to REST API. 
-It should be considered to introduce login and logout screens to better secure end-user visible content. 
-But that demands greater changes in the web application.  
+Static web page is not secured but it triggers Basic auth during first request to REST API. This is done just to
+check current user, as expenses are related to each user. Logout is not possible without totally 
+closing the browser window (as there is incompatibility between basic auth behaviour between browsers during logout flow
+ - firefox for example on removing session and sending HTTP status 401 does not display basic auth prompt),
+It should be considered to introduce login and logout screens to better secure end-user visible content.  
 
 For demo purposes all (nginx, Spring Boot application and nginx server) is started preconfigurated 
 in single Docker compose configuration (app.yml) described below.

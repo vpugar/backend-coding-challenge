@@ -47,7 +47,6 @@ app.controller("ctrlExpenses", ["$rootScope", "$scope", "config", "restalchemy",
 		// Retrieve a list of expenses via REST
 		restExpenses.get().then(function(expenses) {
 			$scope.expenses = expenses;
-            $scope.loggedIn = true;
 		});
 	};
 
@@ -74,15 +73,6 @@ app.controller("ctrlExpenses", ["$rootScope", "$scope", "config", "restalchemy",
 			.error(function () {
 				$scope.newExpense.vatCalculation = {};
 			});
-    };
-
-    var logoutSuccess = function() {
-        $scope.loggedIn = false;
-        $scope.expenses = {};
-        $scope.clearExpense();
-        document.cookie = "JSESSIONID=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
-        $notifications.show("Logout", "You just logout", "info", 5000);
-        loadExpenses();
     };
 
 	$scope.saveExpense = function() {
@@ -121,21 +111,6 @@ app.controller("ctrlExpenses", ["$rootScope", "$scope", "config", "restalchemy",
             $scope.newExpense.vatCalculation = {};
         }
 	};
-
-    $scope.login = function() {
-        loadExpenses();
-    };
-
-    $scope.logout = function() {
-        $restalchemy.init({ root: $config.apiroot }).at("logout").get().then(logoutSuccess)
-		.error(function (err, code) {
-			if (code == 401) {
-                logoutSuccess();
-			} else {
-                $notifications.error("Logout", "Error during logout: " + err, {});
-			}
-		});
-    };
 
 	// Initialise scope variables
 	loadExpenses();

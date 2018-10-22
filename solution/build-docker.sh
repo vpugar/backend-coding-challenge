@@ -13,6 +13,7 @@ cd ..
 npm install
 gulp clean
 gulp build
+rm -fr solution/nginx/static/
 cp -r static solution/nginx/
 cd solution
 docker build -t expenses/expenses-nginx -f ./Dockerfile_nginx .
