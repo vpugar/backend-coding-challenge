@@ -12,6 +12,7 @@ import java.util.HashMap;
 import java.util.Optional;
 
 /**
+ * Interface defines feign client for getting exchange rates from:
  * The Free Currency Converter API: free.currencyconverterapi.com
  * <p>
  * URL example: https://free.currencyconverterapi.com/api/v6/convert?q=USD_EUR,EUR_USD&compact=ultra&date=2018-10-14

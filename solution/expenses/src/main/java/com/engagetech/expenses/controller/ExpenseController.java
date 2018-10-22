@@ -31,6 +31,9 @@ import java.util.Optional;
 import static com.engagetech.expenses.util.Constants.URL_PREFIX;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
+/**
+ * API controller that is based UserExpenseService for processing expense requests.
+ */
 @RequiredArgsConstructor
 @RestController
 @RequestMapping(value = URL_PREFIX, produces = APPLICATION_JSON_VALUE)
@@ -39,6 +42,12 @@ public class ExpenseController {
     private final UserService userService;
     private final UserExpenseService userExpenseService;
 
+    /**
+     * Adds single expense, make calculation and returns stored representation.
+     *
+     * @param command set of values with date, amount (in format 100.00 EUR) and reason of expense
+     * @return stored expense with VAT calculation
+     */
     @PostMapping
     @Timed
     public ResponseEntity<ExpenseDTO> addExpense(@Valid @RequestBody AddExpenseCommand command)
@@ -53,6 +62,11 @@ public class ExpenseController {
                 .body(expense);
     }
 
+    /**
+     * Gets users expenses. User is currently resolved user by security.
+     *
+     * @return list of expenses
+     */
     @GetMapping
     @Timed
     public ResponseEntity<List<ExpenseDTO>> getUserExpenses() throws UserNotFoundException {
@@ -61,6 +75,12 @@ public class ExpenseController {
         return ResponseEntity.ok(userExpenses);
     }
 
+    /**
+     * Gets single expense. Expense must belong to current user. User is currently resolved user by security.
+     *
+     * @param id ID of expense
+     * @return expense DTO value
+     */
     @GetMapping("/{id}")
     @Timed
     public ResponseEntity<ExpenseDTO> getExpense(@PathVariable long id)
@@ -74,6 +94,13 @@ public class ExpenseController {
     }
 
 
+    /**
+     * Calculate exchange rate and vat value.
+     *
+     * @param command input command with date amount (in format 100.00 EUR)
+     * @return result of calculation
+     * @throws ExpenseProcessException in case of unsupported values.
+     */
     @GetMapping("/calculations")
     @Timed
     public ResponseEntity<VatCalculationDTO> calculate(@Valid CalculateVatCommand command)

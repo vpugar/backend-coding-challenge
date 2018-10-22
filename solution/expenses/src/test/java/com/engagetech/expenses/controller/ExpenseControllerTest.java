@@ -51,27 +51,14 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @WebMvcTest(value = ExpenseController.class, secure = false)
 public class ExpenseControllerTest {
 
-    @Autowired
-    private MockMvc mockMvc;
-
-    @MockBean
-    private UserExpenseService userExpenseService;
-
-    @MockBean
-    private UserService userService;
-
     private final TestingAuthenticationToken authentication = new TestingAuthenticationToken(
             new User(USERNAME, USERNAME, Collections.emptyList()), null);
-
-    @Before
-    public void prepare() {
-        SecurityContextHolder.getContext().setAuthentication(authentication);
-
-        com.engagetech.expenses.model.User user = new com.engagetech.expenses.model.User();
-        user.setId(USER_ID);
-        user.setUsername(USERNAME);
-        when(userService.getUser(USERNAME)).thenReturn(Optional.of(user));
-    }
+    @Autowired
+    private MockMvc mockMvc;
+    @MockBean
+    private UserExpenseService userExpenseService;
+    @MockBean
+    private UserService userService;
 
     private static ExpenseDTO createExpense(LocalDate today) {
         ExpenseDTO expense = new ExpenseDTO();
@@ -82,6 +69,16 @@ public class ExpenseControllerTest {
         expense.setUserId(USER_ID);
         expense.setVatAmount(new BigDecimal("20.00"));
         return expense;
+    }
+
+    @Before
+    public void prepare() {
+        SecurityContextHolder.getContext().setAuthentication(authentication);
+
+        com.engagetech.expenses.model.User user = new com.engagetech.expenses.model.User();
+        user.setId(USER_ID);
+        user.setUsername(USERNAME);
+        when(userService.getUser(USERNAME)).thenReturn(Optional.of(user));
     }
 
     @Test

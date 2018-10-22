@@ -9,6 +9,10 @@ import org.springframework.stereotype.Service;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 
+/**
+ * Vat calculation algorithm with property defined tax rate:
+ * app.expense.vat-calculator.sales-tax.percentage.
+ */
 @Service
 public class SalesTaxVatCalculator implements VatCalculator {
 

@@ -1,6 +1,5 @@
 package com.engagetech.expenses.service;
 
-
 import com.engagetech.expenses.dto.ExpenseDTO;
 import com.engagetech.expenses.dto.VatCalculationDTO;
 import com.engagetech.expenses.mapper.CurrencyMapper;
@@ -17,6 +16,7 @@ import com.engagetech.expenses.service.exchange.ExchangeResult;
 import com.engagetech.expenses.service.vat.VatCalculator;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -25,6 +25,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
+@Slf4j
 @Service
 public class DbUserExpenseService implements UserExpenseService {
 
@@ -58,6 +59,8 @@ public class DbUserExpenseService implements UserExpenseService {
         expense.setCurrencyAmount(exchangeResult.getTargetAmount());
         expense.setVatData(vatCalculator.calculate(exchangeResult.getTargetAmount().getAmount()));
 
+        log.debug("Storing expense {}", expense);
+
         return expenseMapper.toDto(expenseRepository.save(expense));
     }
 
@@ -68,6 +71,8 @@ public class DbUserExpenseService implements UserExpenseService {
         if (selectedDate == null) {
             selectedDate = LocalDate.now();
         }
+
+        log.debug("Getting VAT calculation {}", command);
 
         CurrencyAmount currencyAmount = currencyAmountParser.parse(command.getAmount());
         ExchangeResult exchangeResult = exchangeCalculator
@@ -89,6 +94,8 @@ public class DbUserExpenseService implements UserExpenseService {
 
         User user = userService.getUser(userId);
 
+        log.debug("Getting user expenses for {}", userId);
+
         return expenseRepository.findAllByUserOrderByDateAscCreatedAtAsc(user)
                 .map(expenseMapper::toDto)
                 .collect(Collectors.toList());
@@ -97,6 +104,9 @@ public class DbUserExpenseService implements UserExpenseService {
     @Override
     @Transactional(readOnly = true)
     public ExpenseDTO getUserExpense(long expenseId) throws ExpenseNotFoundException {
+
+        log.debug("Getting expense by ID {}", expenseId);
+
         return expenseRepository.findById(expenseId)
                 .map(expenseMapper::toDto)
                 .orElseThrow(() -> new ExpenseNotFoundException("Not found expense with id " + expenseId));

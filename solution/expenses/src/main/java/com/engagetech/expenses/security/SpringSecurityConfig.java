@@ -12,6 +12,9 @@ import org.springframework.security.web.AuthenticationEntryPoint;
 
 import javax.sql.DataSource;
 
+/**
+ * Spring security configuration for Basic auth. Users are stored in DB in table expense_user.
+ */
 @Configuration
 @EnableWebSecurity
 public class SpringSecurityConfig extends WebSecurityConfigurerAdapter {

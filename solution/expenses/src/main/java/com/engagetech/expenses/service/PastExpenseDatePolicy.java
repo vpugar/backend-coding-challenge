@@ -7,6 +7,11 @@ import org.springframework.stereotype.Component;
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
 
+/**
+ * Implementation that checks if dates are between number of days in past till today.
+ * Number of days in past is defined with property
+ * app.expense.expense-date-policy.allowed-days-in-past.days.
+ */
 @Component
 public class PastExpenseDatePolicy implements ExpenseDatePolicy {
 

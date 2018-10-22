@@ -2,6 +2,25 @@ README
 ====
 How to run the your solution...
 
+## Description
+
+Solution is based on Spring Boot application. Backend is implementing REST API that is storing expense values in mysql 
+database and contacting external service for getting exchange rates. 
+Web application is deployed for this demo in Docker with nginx for serving web application static content 
+and proxing REST API requests.
+ 
+Spring Boot application uses mysql database. Configuration parameters are in application.properties
+(backend-coding-challenge/solution/expenses/src/main/resources/application.properties - each property is described as 
+part of JavaDoc).
+For demo purposes the application DB is automatically generated and prepopulated with currency configuration and 
+users. The application API is secured with Basic Auth as simple way to guard API requests.
+
+Static web page is not secured but it triggers Basic auth during first request to REST API. 
+It should be considered to introduce login and logout screens to better secure end-user visible content. 
+But that demands greater changes in the web application.  
+
+For demo purposes all (nginx, Spring Boot application and nginx server) is started preconfigurated 
+in single Docker compose configuration (app.yml) described below.
 
 ## Prerequisites
 
@@ -76,4 +95,5 @@ Current users by default are user1, user2, user3 with password test.
  
 IMPORTANT
 ====
-To avoid unconcious bias, we aim to have your submission reviewed anonymously by one of our engineering team. Please try and avoid adding personal details to this document such as your name, or using pronouns that might indicate your gender.
+To avoid unconcious bias, we aim to have your submission reviewed anonymously by one of our engineering team. 
+Please try and avoid adding personal details to this document such as your name, or using pronouns that might indicate your gender.

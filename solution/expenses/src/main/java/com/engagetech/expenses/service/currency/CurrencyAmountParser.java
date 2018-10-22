@@ -10,6 +10,10 @@ import org.springframework.stereotype.Service;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 
+/**
+ * Amount parser that parses string input in following formats, for example "100.00 GBP".
+ * It extracts amount value and supported currency.
+ */
 @RequiredArgsConstructor
 @Service
 public class CurrencyAmountParser {

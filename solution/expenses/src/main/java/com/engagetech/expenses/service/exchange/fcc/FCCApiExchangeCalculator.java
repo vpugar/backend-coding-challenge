@@ -13,6 +13,9 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.Optional;
 
+/**
+ * The Free Currency Converter API based implementation of exchange of currencies.
+ */
 @RequiredArgsConstructor
 @Slf4j
 @Service
@@ -31,6 +34,8 @@ public class FCCApiExchangeCalculator implements ExchangeCalculator {
         }
 
         try {
+            log.debug("Getting exchange rate for pair {}_{}", sourceCurrencyAmount.getCurrency(), targetCurrency);
+
             final Optional<BigDecimal> rateOptional = fccApiClient.convert(
                     date, sourceCurrencyAmount.getCurrency(), targetCurrency);
 

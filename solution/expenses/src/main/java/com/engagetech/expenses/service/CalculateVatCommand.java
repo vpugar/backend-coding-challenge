@@ -7,6 +7,9 @@ import org.springframework.format.annotation.DateTimeFormat;
 import javax.validation.constraints.NotNull;
 import java.time.LocalDate;
 
+/**
+ * Input command for getting vat, rates and calculation based on date and amount.
+ */
 @Data
 public class CalculateVatCommand {
 

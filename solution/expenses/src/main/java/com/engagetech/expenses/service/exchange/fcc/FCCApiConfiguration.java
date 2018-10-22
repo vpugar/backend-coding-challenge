@@ -10,6 +10,10 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+/**
+ * Configures FCCApiClient feign client. Client endpoint URL is
+ * app.expense.exchange.fcc-api.api-url.
+ */
 @Configuration
 public class FCCApiConfiguration {
 

@@ -19,6 +19,9 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.Optional;
 
+/**
+ * DB implementation that gets, calculates and stores exchange rates based on stored values.
+ */
 @RequiredArgsConstructor
 @Service
 public class DbExchangeCalculatorService implements ExchangeCalculatorService {

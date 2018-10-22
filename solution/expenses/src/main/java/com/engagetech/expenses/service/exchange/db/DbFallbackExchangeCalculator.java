@@ -10,6 +10,10 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDate;
 import java.util.Optional;
 
+/**
+ * Fallback based implementation of exchange of currencies. Fallback is done from ExchangeCalculator and
+ * storage based ExchangeCalculatorService.
+ */
 @Service("exchangeCalculator")
 public class DbFallbackExchangeCalculator implements ExchangeCalculator {
 

@@ -8,6 +8,9 @@ import org.hibernate.validator.constraints.Length;
 import javax.validation.constraints.NotNull;
 import java.time.LocalDate;
 
+/**
+ * Input command for storing expenses.
+ */
 @Data
 public class AddExpenseCommand {
 

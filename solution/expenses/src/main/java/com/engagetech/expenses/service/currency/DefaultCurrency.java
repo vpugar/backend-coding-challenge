@@ -13,6 +13,13 @@ import java.util.Set;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.Collectors;
 
+/**
+ * Service that stores target currency and supported currencies.
+ * Target is one (configuration with app.expense.default-currency.target-currency.short-name) that will be used for
+ * storing all expenses.
+ * Supported currencies (configuration with with app.expense.default-currency.supported-currencies.short-name)
+ * is set of currencies that can be used for converting with exchange service.
+ */
 @Service
 public class DefaultCurrency {
 
