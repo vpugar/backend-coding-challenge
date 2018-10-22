@@ -13,6 +13,7 @@ import com.engagetech.expenses.service.UserService;
 import com.engagetech.expenses.service.currency.DefaultCurrency;
 import com.engagetech.expenses.service.exchange.ExchangeCalculator;
 import com.engagetech.expenses.service.exchange.ExchangeCalculatorService;
+import com.engagetech.expenses.service.vat.VatCalculator;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.ClassRule;
@@ -98,6 +99,9 @@ public class ExpenseControllerIntegrationTest {
     @Autowired
     private DefaultCurrency defaultCurrency;
 
+    @Autowired
+    private VatCalculator vatCalculator;
+
     private TestingAuthenticationToken authentication;
 
     @AfterClass
@@ -143,7 +147,7 @@ public class ExpenseControllerIntegrationTest {
 
         errorCollector.checkThat(result.getId(), is(expenseId));
         errorCollector.checkThat(result.getAmount(), is(new BigDecimal("100.00")));
-        errorCollector.checkThat(result.getVatAmount(), is(new BigDecimal("20.00")));
+        errorCollector.checkThat(result.getVatAmount(), is(vatCalculator.calculate(result.getAmount()).getVatAmount()));
         errorCollector.checkThat(result.getDate(), is(command.getDate()));
         errorCollector.checkThat(result.getReason(), is(command.getReason()));
         errorCollector.checkThat(result.getUserId(), is(USER_ID));
@@ -180,10 +184,7 @@ public class ExpenseControllerIntegrationTest {
                 .multiply(new BigDecimal(100))
                 .setScale(defaultCurrency.getTarget().getScale(), RoundingMode.HALF_UP);
         errorCollector.checkThat(result.getAmount(), is(amount));
-        errorCollector.checkThat(result.getVatAmount(), is(amount
-                .multiply(new BigDecimal("20"))
-                .divide(new BigDecimal("100"))
-                .setScale(defaultCurrency.getTarget().getScale(), RoundingMode.HALF_UP)));
+        errorCollector.checkThat(result.getVatAmount(), is(vatCalculator.calculate(amount).getVatAmount()));
         errorCollector.checkThat(result.getDate(), is(command.getDate()));
         errorCollector.checkThat(result.getReason(), is(command.getReason()));
         errorCollector.checkThat(result.getUserId(), is(USER_ID));
@@ -271,7 +272,7 @@ public class ExpenseControllerIntegrationTest {
         // arrange
         AddExpenseCommand command = new AddExpenseCommand();
         command.setAmount("100 EUR");
-        command.setDate(LocalDate.now().minusDays(20));
+        command.setDate(LocalDate.now().minusDays(400L));
         command.setReason("for test 1");
 
         // action / assert
@@ -315,7 +316,8 @@ public class ExpenseControllerIntegrationTest {
                 .andExpect(jsonPath("$[0].reason", is(expense1.getReason())))
                 .andExpect(jsonPath("$[0].amount", closeToDouble(expense1.getAmount())))
                 .andExpect(jsonPath("$[1].reason", is(expense2.getReason())))
-                .andExpect(jsonPath("$[1].vat", closeToDouble(expense2.getVatAmount())))
+                .andExpect(jsonPath("$[1].vat", closeToDouble(
+                        vatCalculator.calculate(expense1.getAmount()).getVatAmount())))
                 .andExpect(jsonPath("$[1].date", is(expense2.getDate().toString())));
     }
 
