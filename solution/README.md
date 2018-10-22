@@ -93,7 +93,7 @@ Users are stored in table `expense_user`. Password is hashed with bcrypt
 (online generator *https://www.devglan.com/online-tools/bcrypt-hash-generator*).
 Current users by default are *test1*, *test2*, *test3* with password *test*.  
 
-- Remote service The Free Currency Converter API has limitation to retrieve rates maximally one year in past
+- Remote service The Free Currency Converter API has limitation to provide rates maximally one year in past
 
 - In application.properties is defined that maximal expense date can be 100 days in past 
  
